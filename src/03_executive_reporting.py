@@ -36,7 +36,7 @@ def generate_executive_summary(comments_list):
     # --- NEW SDK INITIALIZATION ---
     client = genai.Client(api_key=api_key)
     
-    # --- PROMPT ENGINEERING ---
+    # Prompt to train the AI agent
     prompt = f"""
     Act as a Senior Customer Experience (CX) Analyst for a major Canadian bank. 
     I will provide you with a list of recent negative client feedback.
@@ -59,9 +59,8 @@ def generate_executive_summary(comments_list):
     
     print("⏳ Synthesizing feedback into an executive report...")
     
-    # --- NEW GENERATE CONTENT CALL ---
     response = client.models.generate_content(
-        model='gemini-2.5-flash', # Upgraded to the latest model version
+        model='gemini-2.5-flash', 
         contents=prompt
     )
     
