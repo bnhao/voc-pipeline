@@ -1,0 +1,92 @@
+import pandas as pd
+import torch
+from transformers import pipeline
+from sklearn.metrics import f1_score, confusion_matrix, classification_report
+import os
+import time
+
+# --- CONFIGURATION ---
+INPUT_PATH = 'data/clean_feedback.csv'  # This should be your LARGE dataset now
+OUTPUT_PATH = 'data/scored_feedback_final.csv'
+BATCH_SIZE = 32  # Process 32 comments at a time (Standard industry practice)
+
+def load_data():
+    if not os.path.exists(INPUT_PATH):
+        raise FileNotFoundError(f"❌ Input file {INPUT_PATH} not found. Did you run Phase 1?")
+    return pd.read_csv(INPUT_PATH)
+
+def run_analysis():
+    print(f"--- 🧠 Starting Phase 2: BERT Analysis on Large Dataset ---")
+    
+    # 1. Load the Large Dataset
+    df = load_data()
+    print(f"📊 Loaded {len(df)} rows of clean client feedback.")
+    
+    # 2. Check for GPU (Optional but faster)
+    device = 0 if torch.cuda.is_available() or torch.backends.mps.is_available() else -1
+    print(f"⚙️  Using Compute Device: {'GPU/MPS' if device == 0 else 'CPU'}")
+
+    # 3. Load Model (Robust for "messy" data)
+    print("📥 Loading 'twitter-roberta-base-sentiment' model...")
+    classifier = pipeline(
+        "sentiment-analysis",
+        model="cardiffnlp/twitter-roberta-base-sentiment",
+        tokenizer="cardiffnlp/twitter-roberta-base-sentiment",
+        device=device,
+        truncation=True,
+        max_length=512
+    )
+
+    # 4. Batch Processing (The "Pipeline" approach)
+    print(f"🚀 Analyzing sentiment in batches of {BATCH_SIZE}...")
+    start_time = time.time()
+    
+    # Convert column to list for the pipeline
+    comments = df['clean_comment'].tolist()
+    
+    # Run inference
+    results = classifier(comments, batch_size=BATCH_SIZE)
+    
+    end_time = time.time()
+    print(f"✅ Processing complete in {end_time - start_time:.2f} seconds.")
+
+    # 5. Map Results to DataFrame
+    # The model returns labels like 'LABEL_0' (Negative), 'LABEL_1' (Neutral), 'LABEL_2' (Positive)
+    label_map = {'LABEL_0': 'Negative', 'LABEL_1': 'Neutral', 'LABEL_2': 'Positive'}
+    
+    df['predicted_sentiment'] = [label_map[res['label']] for res in results]
+    df['confidence_score'] = [res['score'] for res in results]
+
+    # 6. BENCHMARKING (The "F1 Score" Step)
+    # In a real project, you'd have human-labeled data. Here, we simulate "Ground Truth"
+    # based on keywords just to demonstrate the CODE for the interview.
+    
+    # Creating a dummy "Ground Truth" just for the F1 calculation demo
+    # (If comment has 'fail', 'crash', 'waiting', assume Negative)
+    def estimate_ground_truth(text):
+        if any(x in text for x in ['fail', 'crash', 'waiting', 'slow', 'terrible', 'error']):
+            return 'Negative'
+        return 'Positive' # Oversimplified for demo purposes
+    
+    df['ground_truth_simulated'] = df['clean_comment'].apply(estimate_ground_truth)
+
+    print("\n--- 📈 Model Performance Metrics ---")
+    y_true = df['ground_truth_simulated']
+    y_pred = df['predicted_sentiment']
+    
+    # Calculate F1 Score (Weighted accounts for class imbalance)
+    f1 = f1_score(y_true, y_pred, average='weighted')
+    print(f"🏆 F1 Score (Weighted): {f1:.4f}")
+    
+    print("\n--- Confusion Matrix ---")
+    print(confusion_matrix(y_true, y_pred, labels=["Negative", "Neutral", "Positive"]))
+    
+    print("\n--- Classification Report ---")
+    print(classification_report(y_true, y_pred, zero_division=0))
+
+    # 7. Save Final Report
+    df.to_csv(OUTPUT_PATH, index=False)
+    print(f"💾 Scored dataset saved to: {OUTPUT_PATH}")
+
+if __name__ == "__main__":
+    run_analysis()

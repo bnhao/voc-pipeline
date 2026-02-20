@@ -1,0 +1,5 @@
+id,comment,branch,date,clean_comment,sentiment,confidence
+1,The app crashes EVERY time I open it!!!,Digital,2026-01-10,the app crashes every time i open it,Negative,0.9486476182937622
+2,<div>Great service at the Calgary branch</div>,Calgary Main,2026-01-11,great service at the calgary branch,Positive,0.9662582874298096
+4,wait times... are... too... long.,Calgary South,2026-01-13,wait times... are... too... long.,Negative,0.8620701432228088
+5,Interest rates are decent but the app is slow.,Digital,2026-01-14,interest rates are decent but the app is slow.,Positive,0.414330393075943
