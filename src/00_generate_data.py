@@ -22,7 +22,6 @@ products = [
     "No-Fee All-In Digital", "Mortgage", "Business Operating Account", "GIC"
 ]
 
-# mix "Templates" with "Keywords" to create unique sentences
 
 # 1. NEGATIVE TEMPLATES (The problems you need to find)
 negative_templates = [
@@ -63,7 +62,6 @@ positive_adjectives = [
     "helpful", "friendly", "amazing", "quick", "efficient", "kind"
 ]
 
-# --- GENERATOR FUNCTIONS ---
 
 def generate_comment(sentiment):
     """Generates a fake but realistic client comment."""

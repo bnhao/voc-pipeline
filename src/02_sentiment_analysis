@@ -22,7 +22,7 @@ def run_analysis():
     df = load_data()
     print(f"📊 Loaded {len(df)} rows of clean client feedback.")
     
-    # 2. Check for GPU (Optional but faster)
+    # 2. Check for GPU 
     device = 0 if torch.cuda.is_available() or torch.backends.mps.is_available() else -1
     print(f"⚙️  Using Compute Device: {'GPU/MPS' if device == 0 else 'CPU'}")
 
@@ -57,11 +57,7 @@ def run_analysis():
     df['predicted_sentiment'] = [label_map[res['label']] for res in results]
     df['confidence_score'] = [res['score'] for res in results]
 
-    # 6. BENCHMARKING (The "F1 Score" Step)
-    # In a real project, you'd have human-labeled data. Here, we simulate "Ground Truth"
-    # based on keywords just to demonstrate the CODE for the interview.
     
-    # Creating a dummy "Ground Truth" just for the F1 calculation demo
     # (If comment has 'fail', 'crash', 'waiting', assume Negative)
     def estimate_ground_truth(text):
         if any(x in text for x in ['fail', 'crash', 'waiting', 'slow', 'terrible', 'error']):
