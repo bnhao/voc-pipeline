@@ -30,3 +30,20 @@ source venv/bin/activate
 # Install dependencies
 pip install pandas sqlalchemy pyodbc transformers torch scikit-learn google-genai python-dotenv
 ```
+
+## 🌐 Interactive Browser Showcase & Deployment
+
+An interactive full-stack web showcase is included to explore all 4 stages of the VoC pipeline, test live comments through the regex sanitizer and sentiment classifier, inspect RoBERTa telemetry across ATB branches/products, and synthesize executive strategy reports.
+
+```bash
+# 1. Rebuild the precomputed showcase data bundle (optional after re-running pipeline phases)
+./venv/bin/python src/build_showcase_data.py
+
+# 2. Start the local showcase server (runs at http://localhost:8000)
+./venv/bin/python app.py
+```
+
+### Deploying
+- **Vercel (Serverless Python + Static UI):** Configured via `vercel.json` and `api/index.py`. Run `vercel deploy` from the repository root.
+- **Static Hosting (GitHub Pages / Netlify / Cloudflare Pages):** Serve the `public/` directory directly; `public/app.js` automatically falls back to client-side pipeline execution using `public/data/pipeline_bundle.json`.
+

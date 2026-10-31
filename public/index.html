@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    try {
+      document.querySelector('meta[name="color-scheme"]').content = localStorage.getItem("color-scheme") ?? "light dark";
+    } catch {}
+  </script>
+  <title>ATB Voice of Client (VoC) Intelligence Pipeline — Interactive Showcase</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <!-- Top Header Navigation -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand-group">
+        <div class="brand-badge" aria-hidden="true">VoC</div>
+        <div>
+          <div class="brand-eyebrow">ATB Financial • Customer Experience Intelligence</div>
+          <h1 class="brand-title">Voice of Client (VoC) AI Pipeline</h1>
+        </div>
+      </div>
+
+      <nav class="section-nav" aria-label="Pipeline sections">
+        <a href="#pipeline-architecture" class="nav-pill">4-Stage Pipeline</a>
+        <a href="#live-sandbox" class="nav-pill">Live AI Sandbox</a>
+        <a href="#analytics-hub" class="nav-pill">BERT Analytics</a>
+        <a href="#executive-report" class="nav-pill">Gemini Report</a>
+        <a href="#feedback-explorer" class="nav-pill">SQL &amp; Data Explorer</a>
+      </nav>
+
+      <div class="header-actions">
+        <span id="api-status-badge" class="status-pill status-ready" title="Pipeline runtime status">
+          <span class="status-dot"></span>
+          <span id="api-status-text">Pipeline Ready</span>
+        </span>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          id="open-code-dialog-btn"
+          command="show-modal"
+          commandfor="code-inspector-dialog"
+        >
+          <span>View Pipeline Code</span>
+        </button>
+        <button
+          type="button"
+          class="btn btn-icon"
+          id="theme-toggle-btn"
+          aria-label="Toggle color theme"
+          title="Switch color theme"
+        >
+          <span class="theme-icon-sun" aria-hidden="true">☀️</span>
+          <span class="theme-icon-moon" aria-hidden="true">🌙</span>
+          <span class="sr-only" id="theme-toggle-label">Switch color theme</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- Hero Banner & End-to-End KPI Strip -->
+    <section class="hero-card">
+      <div class="hero-content">
+        <div class="hero-tags">
+          <span class="tag tag-accent">End-to-End NLP + GenAI</span>
+          <span class="tag">SQLite / MS SQL</span>
+          <span class="tag">cardiffnlp/twitter-roberta-base-sentiment</span>
+          <span class="tag">Google Gemini 2.5 Flash</span>
+        </div>
+        <h2>From Unstructured Banking Feedback to Executive Strategy</h2>
+        <p class="hero-description">
+          Financial institutions receive thousands of unstructured survey comments across mobile apps, call centers, and branches daily.
+          Explore how this automated 4-stage pipeline ingests raw SQL records, sanitizes noisy text with Regex/Pandas, classifies sentiment in batches of 32 with RoBERTa, and synthesizes executive action plans with Gemini.
+        </p>
+      </div>
+
+      <div class="kpi-grid" aria-label="Pipeline key metrics">
+        <article class="kpi-card">
+          <div class="kpi-label">Phase 0–1 • Raw SQL Records</div>
+          <div class="kpi-value" id="kpi-raw-count">3,000</div>
+          <div class="kpi-sub">Extracted from <code>ClientFeedback</code> table</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-label">Phase 1 • Cleaned Foundation</div>
+          <div class="kpi-value" id="kpi-clean-count">2,894</div>
+          <div class="kpi-sub"><span id="kpi-dropped-count">106</span> null/noisy rows filtered</div>
+        </article>
+        <article class="kpi-card kpi-card-negative">
+          <div class="kpi-label">Phase 2 • Negative Detected</div>
+          <div class="kpi-value" id="kpi-neg-pct">58.2%</div>
+          <div class="kpi-sub"><span id="kpi-neg-count">1,683</span> complaints flagged by RoBERTa</div>
+        </article>
+        <article class="kpi-card kpi-card-accent">
+          <div class="kpi-label">Phase 2 • Mean Confidence</div>
+          <div class="kpi-value" id="kpi-avg-conf">87.9%</div>
+          <div class="kpi-sub">Weighted F1 Score: <strong id="kpi-f1-score">0.4882</strong></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Interactive 4-Stage Pipeline Stepper -->
+    <section id="pipeline-architecture" class="dashboard-panel">
+      <div class="section-header">
+        <div>
+          <span class="section-eyebrow">Architecture &amp; Execution Flow</span>
+          <h3>Interactive 4-Stage VoC Pipeline</h3>
+        </div>
+        <div class="stage-Hint">Click any stage to inspect its transformation, metrics, and source module</div>
+      </div>
+
+      <div class="pipeline-stepper" role="tablist" aria-label="Pipeline stages">
+        <button type="button" role="tab" aria-selected="true" class="stage-step active" data-stage="0">
+          <span class="stage-num">Phase 0</span>
+          <strong class="stage-name">Synthetic Data Gen</strong>
+          <span class="stage-meta"><code>00_generate_data.py</code> • 3,000 rows</span>
+        </button>
+        <button type="button" role="tab" aria-selected="false" class="stage-step" data-stage="1">
+          <span class="stage-num">Phase 1</span>
+          <strong class="stage-name">SQL &amp; Regex Cleaning</strong>
+          <span class="stage-meta"><code>01_data_ingestion.py</code> • 2,894 clean</span>
+        </button>
+        <button type="button" role="tab" aria-selected="false" class="stage-step" data-stage="2">
+          <span class="stage-num">Phase 2</span>
+          <strong class="stage-name">RoBERTa Sentiment</strong>
+          <span class="stage-meta"><code>02_sentiment_analysis</code> • Batch=32</span>
+        </button>
+        <button type="button" role="tab" aria-selected="false" class="stage-step" data-stage="3">
+          <span class="stage-num">Phase 3</span>
+          <strong class="stage-name">Gemini Executive Brief</strong>
+          <span class="stage-meta"><code>03_executive_reporting.py</code> • Top 100 Neg</span>
+        </button>
+      </div>
+
+      <div id="stage-detail-container" class="stage-detail-box" role="tabpanel">
+        <!-- Populated dynamically by app.js -->
+      </div>
+    </section>
+
+    <!-- Live Interactive AI & Regex Sandbox -->
+    <section id="live-sandbox" class="dashboard-panel">
+      <div class="section-header">
+        <div>
+          <span class="section-eyebrow">Real-Time Pipeline Simulation</span>
+          <h3>Live VoC Pipeline Sandbox</h3>
+        </div>
+        <div class="preset-buttons">
+          <span class="preset-label">Load preset:</span>
+          <button type="button" class="btn btn-sm" data-preset="crash">App Crash &amp; HTML Noise</button>
+          <button type="button" class="btn btn-sm" data-preset="fraud">Banff Card Lock</button>
+          <button type="button" class="btn btn-sm" data-preset="positive">Branch Praise</button>
+          <button type="button" class="btn btn-sm" data-preset="noisy">Ambiguous / Messy</button>
+          <button type="button" class="btn btn-sm btn-accent-outline" id="random-synthetic-btn">🎲 Generate Synthetic Row</button>
+        </div>
+      </div>
+
+      <div class="sandbox-grid">
+        <form id="sandbox-form" class="sandbox-input-card">
+          <div class="form-row-2">
+            <div class="field-group">
+              <label for="sandbox-branch">ATB Branch / Channel</label>
+              <select id="sandbox-branch" name="branch">
+                <option value="Digital (App/Web)">Digital (App/Web)</option>
+                <option value="Calgary - 17th Ave">Calgary - 17th Ave</option>
+                <option value="Calgary - Chinook">Calgary - Chinook</option>
+                <option value="Calgary - Country Hills">Calgary - Country Hills</option>
+                <option value="Edmonton - Southgate">Edmonton - Southgate</option>
+                <option value="Edmonton - Whythe Ave">Edmonton - Whythe Ave</option>
+                <option value="Red Deer - Gaetz Ave">Red Deer - Gaetz Ave</option>
+                <option value="Lethbridge - West">Lethbridge - West</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="sandbox-product">Banking Product</label>
+              <select id="sandbox-product" name="product">
+                <option value="No-Fee All-In Digital">No-Fee All-In Digital</option>
+                <option value="Springboard Savings">Springboard Savings</option>
+                <option value="Business Operating Account">Business Operating Account</option>
+                <option value="Mortgage">Mortgage</option>
+                <option value="GIC">GIC</option>
+                <option value="Gold Cash Rewards Mastercard">Gold Cash Rewards Mastercard</option>
+                <option value="Unlimited Chequing">Unlimited Chequing</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="sandbox-comment">Raw Client Survey Comment (HTML tags, special chars &amp; punctuation supported)</label>
+            <textarea
+              id="sandbox-comment"
+              name="comment"
+              rows="3"
+              placeholder="Enter a raw customer comment to trace through Phase 1 (Regex Cleaning) & Phase 2 (Sentiment Scoring)..."
+            >&lt;div&gt;Biometric login on the app freeze at the login screen every time after the update!! @#%&lt;/div&gt;</textarea>
+          </div>
+
+          <div class="sandbox-actions">
+            <button type="submit" class="btn btn-primary" id="run-sandbox-btn">
+              Run Through VoC Pipeline →
+            </button>
+            <span class="sandbox-note" id="sandbox-engine-note">Executes Phase 1 regex sanitizer + Phase 2 sentiment scorer</span>
+          </div>
+        </form>
+
+        <div class="sandbox-output-card" aria-live="polite">
+          <div class="trace-step">
+            <div class="trace-header">
+              <span class="trace-badge">Step 1 • SQL &amp; Regex Normalization</span>
+              <span id="sandbox-clean-status" class="badge badge-positive">Retained</span>
+            </div>
+            <div class="code-comparison">
+              <div>
+                <div class="micro-label">Raw Input</div>
+                <code id="sandbox-raw-preview" class="trace-code"></code>
+              </div>
+              <div>
+                <div class="micro-label">Cleaned Output (<code>clean_text()</code>)</div>
+                <code id="sandbox-clean-preview" class="trace-code trace-code-clean"></code>
+              </div>
+            </div>
+          </div>
+
+          <div class="trace-step">
+            <div class="trace-header">
+              <span class="trace-badge">Step 2 • RoBERTa Sentiment Classification</span>
+              <span id="sandbox-model-tag" class="micro-label">LABEL_0 → Negative</span>
+            </div>
+            <div class="sentiment-result-row">
+              <div class="sentiment-pill-large" id="sandbox-sentiment-badge">Negative</div>
+              <div class="confidence-meter-wrap">
+                <div class="confidence-meter-labels">
+                  <span>Confidence Score</span>
+                  <strong id="sandbox-confidence-val">94.8%</strong>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" id="sandbox-confidence-bar" style="inline-size: 94.8%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="trace-step">
+            <div class="trace-header">
+              <span class="trace-badge">Step 3 • Executive Pipeline Routing</span>
+            </div>
+            <p id="sandbox-routing-explanation" class="routing-text"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 2 Analytics & Benchmarking Hub -->
+    <section id="analytics-hub" class="dashboard-panel">
+      <div class="section-header">
+        <div>
+          <span class="section-eyebrow">Phase 2 • Deep-Dive Telemetry</span>
+          <h3>Sentiment Distribution &amp; Model Benchmarking</h3>
+        </div>
+        <div class="dimension-tabs" role="tablist" aria-label="Breakdown dimension">
+          <button type="button" class="btn btn-sm active" data-dim="by_branch">By ATB Branch</button>
+          <button type="button" class="btn btn-sm" data-dim="by_product">By Banking Product</button>
+          <button type="button" class="btn btn-sm" data-dim="by_source">By Survey Channel</button>
+        </div>
+      </div>
+
+      <div class="analytics-grid">
+        <!-- Left column: Stacked horizontal bar breakdown by Branch / Product / Source -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h4 id="breakdown-chart-title">Sentiment Breakdown by ATB Branch</h4>
+            <div class="legend-inline">
+              <span class="legend-item"><span class="swatch swatch-neg"></span>Negative</span>
+              <span class="legend-item"><span class="swatch swatch-neu"></span>Neutral</span>
+              <span class="legend-item"><span class="swatch swatch-pos"></span>Positive</span>
+            </div>
+          </div>
+          <div id="breakdown-bars-container" class="breakdown-bars"></div>
+        </div>
+
+        <!-- Right column: Confusion Matrix & Confidence Distribution -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h4>Model Confidence &amp; Evaluation Matrix</h4>
+            <span class="badge">2,894 Scored Rows</span>
+          </div>
+
+          <div class="metrics-mini-grid">
+            <div class="mini-stat">
+              <span>Weighted F1</span>
+              <strong id="metric-f1">0.4882</strong>
+            </div>
+            <div class="mini-stat">
+              <span>Weighted Precision</span>
+              <strong id="metric-precision">0.6844</strong>
+            </div>
+            <div class="mini-stat">
+              <span>High Conf (&ge;85%)</span>
+              <strong id="metric-high-conf">2,261</strong>
+            </div>
+          </div>
+
+          <h5 class="subchart-title">Confidence Score Distribution</h5>
+          <div id="confidence-hist-container" class="hist-bars"></div>
+
+          <h5 class="subchart-title">Confusion Matrix (Simulated Ground Truth vs. Predicted)</h5>
+          <div id="confusion-matrix-container" class="matrix-wrapper"></div>
+        </div>
+      </div>
+
+      <!-- Monthly Timeline -->
+      <div class="chart-card timeline-card">
+        <div class="chart-card-header">
+          <h4>12-Month Client Sentiment Volume Trend</h4>
+          <span class="micro-label">Click any bar in the charts above to filter the Data Explorer below</span>
+        </div>
+        <div id="monthly-trend-container" class="monthly-chart"></div>
+      </div>
+    </section>
+
+    <!-- Phase 3 Automated Executive Report (Gemini 2.5 Flash) -->
+    <section id="executive-report" class="dashboard-panel">
+      <div class="section-header">
+        <div>
+          <span class="section-eyebrow">Phase 3 • Generative AI Synthesis (<code>gemini-2.5-flash</code>)</span>
+          <h3>Executive Customer Experience Strategy Report</h3>
+        </div>
+        <div class="report-actions">
+          <button type="button" class="btn btn-secondary" id="toggle-prompt-btn">
+            Inspect Gemini Prompt Template
+          </button>
+          <button type="button" class="btn btn-primary" id="regenerate-report-btn">
+            ✨ Synthesize Report for Active Filter
+          </button>
+        </div>
+      </div>
+
+      <div id="prompt-inspector-drawer" class="prompt-drawer" hidden>
+        <div class="prompt-drawer-header">
+          <strong>Prompt Template from <code>src/03_executive_reporting.py</code></strong>
+          <span class="badge">Top 100 High-Confidence Negative Comments Injected</span>
+        </div>
+        <pre><code>Act as a Senior Customer Experience (CX) Analyst for a major Canadian bank.
+I will provide you with a list of recent negative client feedback.
+
+Your task is to analyze these comments and provide a structured executive summary for the Branch Management Team.
+
+Format the output EXACTLY like this using Markdown:
+## 🚨 Top 3 Critical Pain Points
+[Identify the three most common issues across the feedback, using bullet points]
+
+## 💡 Recommended Strategic Actions
+[Provide three actionable, operational recommendations to solve these pain points]
+
+## 📝 Summary Context
+[A brief 2-sentence summary of the overall client mood]</code></pre>
+      </div>
+
+      <div class="report-layout">
+        <div class="report-rendered-card" id="executive-report-content">
+          <!-- Rendered Markdown report -->
+        </div>
+
+        <aside class="report-sidebar">
+          <div class="sidebar-box">
+            <h4>Input Feed Summary</h4>
+            <p class="sidebar-desc">
+              Phase 3 filters <code>scored_feedback_final.csv</code> for <code>predicted_sentiment == 'Negative'</code> and samples the top 100 complaints to optimize token usage.
+            </p>
+            <dl class="meta-list">
+              <div>
+                <dt>Filtered Negative Pool</dt>
+                <dd id="report-neg-pool">1,683 comments</dd>
+              </div>
+              <div>
+                <dt>Sample Passed to LLM</dt>
+                <dd id="report-sample-size">100 comments</dd>
+              </div>
+              <div>
+                <dt>Target Audience</dt>
+                <dd>ATB Branch &amp; Digital Leadership</dd>
+              </div>
+              <div>
+                <dt>Output Artifact</dt>
+                <dd><code>data/CX_Executive_Report.md</code></dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="sidebar-box">
+            <h4>Sample Negative Inputs Fed to Gemini</h4>
+            <ul class="sample-feed-list" id="report-sample-comments"></ul>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Interactive SQL & Scored Feedback Data Explorer -->
+    <section id="feedback-explorer" class="dashboard-panel">
+      <div class="section-header">
+        <div>
+          <span class="section-eyebrow">Database &amp; Scored Output Table (<code>scored_feedback_final.csv</code>)</span>
+          <h3>Interactive Client Feedback Explorer</h3>
+        </div>
+        <div class="table-Quick-actions">
+          <button type="button" class="btn btn-sm" id="reset-filters-btn">Reset Filters</button>
+          <button type="button" class="btn btn-sm btn-secondary" id="export-csv-btn">⬇ Export Filtered CSV</button>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar" role="search" aria-label="Filter client feedback records">
+        <div class="filter-field filter-search">
+          <label for="filter-query">Search Comments or ID</label>
+          <input type="search" id="filter-query" placeholder="e.g. biometric, Banff, e-Transfer, wait times...">
+        </div>
+
+        <div class="filter-field">
+          <label for="filter-sentiment">Sentiment</label>
+          <select id="filter-sentiment">
+            <option value="ALL">All Sentiments (2,894)</option>
+            <option value="Negative">Negative (1,683)</option>
+            <option value="Positive">Positive (895)</option>
+            <option value="Neutral">Neutral (316)</option>
+          </select>
+        </div>
+
+        <div class="filter-field">
+          <label for="filter-branch">ATB Branch</label>
+          <select id="filter-branch">
+            <option value="ALL">All Branches</option>
+          </select>
+        </div>
+
+        <div class="filter-field">
+          <label for="filter-product">Product</label>
+          <select id="filter-product">
+            <option value="ALL">All Products</option>
+          </select>
+        </div>
+
+        <div class="filter-field">
+          <label for="filter-source">Channel</label>
+          <select id="filter-source">
+            <option value="ALL">All Channels</option>
+          </select>
+        </div>
+
+        <div class="filter-field">
+          <label for="filter-conf">Min Confidence: <strong id="filter-conf-label">0%</strong></label>
+          <input type="range" id="filter-conf" min="0" max="95" step="5" value="0">
+        </div>
+      </div>
+
+      <!-- Responsive Table following modern-web-guidance `responsive-table` -->
+      <div tabindex="0" role="region" aria-labelledby="feedback-table-caption" class="table-wrapper scroller">
+        <table id="feedback-table">
+          <caption id="feedback-table-caption" class="table-caption">
+            <div>
+              Showing <strong id="table-showing-range">1–25</strong> of <strong id="table-total-filtered">2,894</strong> scored client feedback records
+            </div>
+            <div class="pagination-controls">
+              <button type="button" class="btn btn-sm" id="prev-page-btn" disabled>← Prev</button>
+              <span id="page-indicator" class="page-indicator">Page 1 of 116</span>
+              <button type="button" class="btn btn-sm" id="next-page-btn">Next →</button>
+            </div>
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">ID &amp; Date</th>
+              <th scope="col">Branch &amp; Channel</th>
+              <th scope="col">Product</th>
+              <th scope="col">Client Feedback (Raw vs. Clean)</th>
+              <th scope="col">RoBERTa Sentiment</th>
+              <th scope="col">Confidence</th>
+              <th scope="col">Inspect</th>
+            </tr>
+          </thead>
+          <tbody id="feedback-table-body">
+            <!-- Populated by app.js -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <strong>Customer Feedback Intelligence Pipeline (VoC)</strong> • Author: Mark Bui (Software Development, SAIT)
+      </div>
+      <div class="footer-links">
+        <span>Stack: Python • SQLite/MS SQL • Hugging Face RoBERTa • Google GenAI • Pandas</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Native Modal Dialog for Pipeline Source Code Inspection (`dialog` guide compliant) -->
+  <dialog id="code-inspector-dialog" closedby="any" aria-labelledby="code-dialog-title">
+    <div class="dialog-header">
+      <div>
+        <span class="section-eyebrow">Source Repository Modules</span>
+        <h2 id="code-dialog-title">VoC Pipeline Python Source Code</h2>
+      </div>
+      <form method="dialog">
+        <button value="close" class="btn btn-sm" autofocus>Close (Esc)</button>
+      </form>
+    </div>
+
+    <div class="code-tabs" role="tablist" aria-label="Source files">
+      <button type="button" class="btn btn-sm active" data-file="00_generate_data.py">00_generate_data.py</button>
+      <button type="button" class="btn btn-sm" data-file="01_data_ingestion.py">01_data_ingestion.py</button>
+      <button type="button" class="btn btn-sm" data-file="02_sentiment_analysis">02_sentiment_analysis</button>
+      <button type="button" class="btn btn-sm" data-file="03_executive_reporting.py">03_executive_reporting.py</button>
+    </div>
+
+    <pre class="code-viewer scroller"><code id="dialog-code-content"></code></pre>
+  </dialog>
+
+  <!-- Native Modal Dialog for Single Record Pipeline Trace (`dialog` guide compliant) -->
+  <dialog id="record-trace-dialog" closedby="any" aria-labelledby="record-dialog-title">
+    <div class="dialog-header">
+      <div>
+        <span class="section-eyebrow">End-to-End Record Lineage</span>
+        <h2 id="record-dialog-title">Feedback Record Pipeline Trace</h2>
+      </div>
+      <form method="dialog">
+        <button value="close" class="btn btn-sm" autofocus>Close (Esc)</button>
+      </form>
+    </div>
+    <div id="record-trace-body" class="record-trace-body"></div>
+  </dialog>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

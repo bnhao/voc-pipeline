@@ -128,7 +128,7 @@ def generate_dataset():
     
     # Save to CSV
     df.to_csv(OUTPUT_FILE, index=False)
-    print(f"✅ Successfully created '{OUTPUT_FILE}' with {len(df)} rows.")
+    print(f"Successfully created '{OUTPUT_FILE}' with {len(df)} rows.")
     print(df.head())
 
 if __name__ == "__main__":
